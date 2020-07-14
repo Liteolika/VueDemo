@@ -1,28 +1,36 @@
-﻿import Vue from 'vue'
-import Vuex, { Store, createLogger } from 'vuex'
-import VuexPersistence from 'vuex-persist'
+﻿import Vue from "vue";
+import Vuex, { StoreOptions, createLogger } from "vuex";
+import VuexPersistence, { PersistOptions } from "vuex-persist";
 
-import counter, { CounterState } from "./modules/counterModule"
+import counterStore, { CounterState } from "./modules/counter";
+import authStore, { AuthState } from "./modules/auth";
 
 export * from "./actions.type";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-const vuexLocal = new VuexPersistence<RootState>({
-    key: 'counterstate',
+const persistOptions: PersistOptions<RootState> = {
+    key: "counterstate",
     storage: window.localStorage,
     modules: ["counter"]
-})
+};
 
-export default new Vuex.Store<RootState>({
-    plugins: [createLogger(), vuexLocal.plugin],
+const vuexLocal = new VuexPersistence<RootState>(persistOptions);
+
+const storeOptions: StoreOptions<RootState> = {
+    plugins: [
+        createLogger(),
+        vuexLocal.plugin
+    ],
     modules: {
-        counter: counter
-    },
-    mutations: {
+        counter: counterStore,
+        auth: authStore
     }
-})
+};
+
+export default new Vuex.Store<RootState>(storeOptions);
 
 export interface RootState {
     counter: CounterState;
+    auth: AuthState;
 }

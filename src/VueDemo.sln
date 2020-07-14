@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VueApp", "VueApp\VueApp.csproj", "{35190237-B442-4455-B7F9-B4249E65F34F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{B1AE7322-DEA9-4E51-B386-34E9B3A5C9E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{35190237-B442-4455-B7F9-B4249E65F34F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35190237-B442-4455-B7F9-B4249E65F34F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35190237-B442-4455-B7F9-B4249E65F34F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1AE7322-DEA9-4E51-B386-34E9B3A5C9E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AE7322-DEA9-4E51-B386-34E9B3A5C9E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AE7322-DEA9-4E51-B386-34E9B3A5C9E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AE7322-DEA9-4E51-B386-34E9B3A5C9E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

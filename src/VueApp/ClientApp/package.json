@@ -13,6 +13,7 @@
     "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.2",
     "moment": "^2.27.0",
+    "oidc-client": "^1.10.1",
     "vue": "^2.6.11",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.3.0",
@@ -28,6 +29,7 @@
     "@vue/cli-plugin-babel": "^4.1.2",
     "@vue/cli-plugin-typescript": "^4.1.2",
     "@vue/cli-service": "^4.1.2",
+    "copy-webpack-plugin": "^6.0.3",
     "typescript": "^3.7.4",
     "vue-template-compiler": "^2.6.11"
   }

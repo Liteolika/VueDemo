@@ -1,12 +1,12 @@
-﻿import { Store, ActionContext } from 'vuex'
+﻿import { Store, ActionContext } from "vuex"
 
-import { RootState } from "../";
+import { RootState } from "..";
 import { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../actions.type";
 
 // initial state
 const state = () => ({
     count: 10
-})
+});
 
 // getters
 const getters = {
@@ -16,11 +16,9 @@ const getters = {
 // actions
 const actions = {
     [COUNTER_INCREMENT](context: ActionContext<CounterState, RootState>) {
-        // context.state.count++
         context.commit("increment");
     },
     [COUNTER_DECREMENT](context: ActionContext<CounterState, RootState>) {
-        // context.state.count--
         context.commit("decrement");
     }
 }
