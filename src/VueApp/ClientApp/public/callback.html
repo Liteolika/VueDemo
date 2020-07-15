@@ -1,21 +1,23 @@
 ﻿<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>Waiting...</title>
 </head>
-
 <body>
-<script src="js/oidc-client.min.js"></script>
+    <script src="js/oidc-client.min.js"></script>
 <script>
-    var mgr = new Oidc.UserManager({userStore: new Oidc.WebStorageStateStore()});
-
+    var store = new Oidc.WebStorageStateStore({
+        prefix: "oidc.",
+        store: window.localStorage
+    });
+    var mgr = new Oidc.UserManager({ userStore: store});
     mgr.signinRedirectCallback().then(function (user) {
-        window.location.href = '../';
+        window.location.href = "../";
     }).catch(function (err) {
         console.log(err);
     });
+
 </script>
 </body>
 

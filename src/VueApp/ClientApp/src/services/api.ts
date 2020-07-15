@@ -2,8 +2,6 @@
 import AuthService from "./auth"
 
 export function initAxios() {
-    // Add the bearer token to all outgoing requests
-    // Taken from here (https://github.com/axios/axios/issues/754) since I couldn't figure it out myself...
     axios.interceptors.request.use(async (config) => {
         const authService = new AuthService();
         const accessToken = await authService.getAccessToken();

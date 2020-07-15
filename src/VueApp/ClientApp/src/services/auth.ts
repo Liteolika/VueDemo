@@ -1,45 +1,33 @@
 ﻿import Oidc, { UserManager, WebStorageStateStore, WebStorageStateStoreSettings, User, UserManagerSettings } from "oidc-client";
 
+Oidc.Log.logger = console;
+Oidc.Log.level = Oidc.Log.INFO;
+
+const storeSettings: WebStorageStateStoreSettings = 
+{
+    prefix: "oidc.",
+    store: window.localStorage
+};
 
 const userManagerSettings: UserManagerSettings = {
     authority: "https://localhost:5001",
     client_id: "js",
-    redirect_uri: "https://localhost:44367/login",
+    redirect_uri: "https://localhost:44367/callback.html",
     response_type: "id_token token",
     scope: "openid profile api1",
-    post_logout_redirect_uri: "https://localhost:44367/logout",
-    userStore: new Oidc.WebStorageStateStore({ store: window.localStorage }),
-
+    post_logout_redirect_uri: "https://localhost:44367/",
+    userStore: new WebStorageStateStore(storeSettings),
     automaticSilentRenew: true,
-    silent_redirect_uri: 'https://localhost:44367/static/silent-renew.html',
-    accessTokenExpiringNotificationTime: 10,
-    //   filterProtocolClaims: true,
-    //   loadUserInfo: true
+    silent_redirect_uri: 'https://localhost:44367/silent-renew.html',
+    accessTokenExpiringNotificationTime: 60,
+    filterProtocolClaims: true,
+    loadUserInfo: true
 };
-
-Oidc.Log.logger = console;
-Oidc.Log.level = Oidc.Log.INFO;
 
 export default class AuthService {
     private userManager: UserManager;
 
     constructor() {
-
-        const userManagerSettings: UserManagerSettings = {
-            authority: "https://localhost:5001",
-            client_id: "js",
-            redirect_uri: "https://localhost:44367/callback.html",
-            response_type: "id_token token",
-            scope: "openid profile api1",
-            post_logout_redirect_uri: "https://localhost:44367/",
-            userStore: new WebStorageStateStore({ store: window.localStorage }),
-            automaticSilentRenew: true,
-            silent_redirect_uri: 'https://localhost:44367/silent-renew.html',
-            accessTokenExpiringNotificationTime: 10,
-            //   filterProtocolClaims: true,
-            //   loadUserInfo: true
-        };
-
         this.userManager = new UserManager(userManagerSettings);
     }
 
@@ -52,6 +40,7 @@ export default class AuthService {
     }
 
     public logout(): Promise<void> {
+        this.userManager.clearStaleState();
         return this.userManager.signoutRedirect();
     }
 
