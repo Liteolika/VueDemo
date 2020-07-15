@@ -2,9 +2,20 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using IdentityServer.Data;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -23,22 +34,75 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
-            var builder = services.AddIdentityServer(options =>
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var databaseName = "IdentityDatabase";
+            var connectionString =
+                @"Data Source=(LocalDb)\MSSQLLocalDB;database=VueDemo.IdentityServer;trusted_connection=yes;";
+
+            services.AddDbContext<ApplicationDbContext>(builder =>
+            {
+                if (Environment.IsDevelopment())
+                {
+                    builder.UseInMemoryDatabase(databaseName);
+                }
+                else
+                {
+                    builder.UseSqlServer(connectionString,
+                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                }
+            });
+
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+            var identityServerBuilder = services.AddIdentityServer(options =>
                 {
                     // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                     options.EmitStaticAudienceClaim = true;
                 })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients)
-                .AddTestUsers(Config.Testusers.ToList());
+                .AddConfigurationStore(options =>
+                {
+                    if (Environment.IsDevelopment())
+                    {
+                        options.ConfigureDbContext = b => b.UseInMemoryDatabase(databaseName);
+                    }
+                    else
+                    {
+                        options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                            sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                    }
+                })
+                .AddOperationalStore(options =>
+                {
+                    if (Environment.IsDevelopment())
+                    {
+                        options.ConfigureDbContext = b => b.UseInMemoryDatabase(databaseName);
+                    }
+                    else
+                    {
+                        options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                            sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                    }
+                })
+                .AddAspNetIdentity<IdentityUser>();
+
+            //.AddTestUsers(Config.Testusers.ToList())
+            //.AddInMemoryIdentityResources(Config.IdentityResources)
+            //.AddInMemoryApiScopes(Config.ApiScopes)
+            //.AddInMemoryClients(Config.Clients);
+
+            //dotnet ef migrations add InitialApplicationDbMigration -c ApplicationDbContext -o Data/Migrations/Application/ApplicationDb
+            //dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
+            //dotnet ef migrations add InitialIdentityServerConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
 
             // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+            identityServerBuilder.AddDeveloperSigningCredential();
         }
 
         public void Configure(IApplicationBuilder app)
         {
+            InitializeDatabase(app);
+
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -46,14 +110,100 @@ namespace IdentityServer
 
             app.UseStaticFiles();
             app.UseRouting();
-            
+
             app.UseIdentityServer();
 
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+            
+            var persistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
+            var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            var applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            if (!persistedGrantDbContext.Database.IsInMemory())
+                persistedGrantDbContext.Database.Migrate();
+
+            if (!configurationDbContext.Database.IsInMemory())
+                configurationDbContext.Database.Migrate();
+            
+            if (!applicationDbContext.Database.IsInMemory())
+                applicationDbContext.Database.Migrate();
+
+            if (!configurationDbContext.Clients.Any())
             {
-                endpoints.MapDefaultControllerRoute();
-            });
+                foreach (var client in Config.Clients)
+                {
+                    configurationDbContext.Clients.Add(client.ToEntity());
+                }
+
+                configurationDbContext.SaveChanges();
+            }
+
+            if (!configurationDbContext.IdentityResources.Any())
+            {
+                foreach (var resource in Config.IdentityResources)
+                {
+                    configurationDbContext.IdentityResources.Add(resource.ToEntity());
+                }
+
+                configurationDbContext.SaveChanges();
+            }
+
+            if (!configurationDbContext.ApiResources.Any())
+            {
+                foreach (var resource in Config.Apis)
+                {
+                    configurationDbContext.ApiResources.Add(resource.ToEntity());
+                }
+
+                configurationDbContext.SaveChanges();
+            }
+
+            if (!configurationDbContext.ApiScopes.Any())
+            {
+                foreach (var scope in Config.ApiScopes)
+                {
+                    configurationDbContext.ApiScopes.Add(scope.ToEntity());
+                }
+
+                configurationDbContext.SaveChanges();
+            }
+
+            var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            if (!roleManager.Roles.Any())
+            {
+                var role = new IdentityRole("user");
+                AsyncHelpers.RunSync(() => roleManager.CreateAsync(role));
+            }
+
+            if (!userManager.Users.Any())
+            {
+                var user = new IdentityUser()
+                {
+                    UserName = "user",
+                    Email = "user@user.com"
+                };
+
+                IdentityResult result = AsyncHelpers.RunSync(() => userManager.CreateAsync(user, "2fast4U!"));
+
+                if (result == IdentityResult.Success)
+                {
+                    AsyncHelpers.RunSync(() => userManager.AddToRoleAsync(user, "user"));
+
+                }
+
+            }
+
+            
+
         }
     }
+
 }

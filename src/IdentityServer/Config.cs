@@ -13,6 +13,12 @@ namespace IdentityServer
 {
     public static class Config
     {
+        public static IEnumerable<ApiResource> Apis =>
+            new ApiResource[]
+            {
+                new ApiResource("api1")
+            };
+
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
@@ -46,7 +52,7 @@ namespace IdentityServer
 
                     RedirectUris = {
                         "https://localhost:44367/callback.html",
-                        "https://localhost:44367/static/silent-renew.html"
+                        "https://localhost:44367/silent-renew.html"
                     },
 
                     PostLogoutRedirectUris = { "https://localhost:44367/" },
