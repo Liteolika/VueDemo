@@ -24,26 +24,6 @@ export default class AuthService {
     private userManager: UserManager;
 
     constructor() {
-        //const AUTH0_DOMAIN: string = "https://jerrie.auth0.com";
-
-        //const settings: any = {
-        //    userStore: new WebStorageStateStore({ store: window.localStorage }),
-        //    authority: AUTH0_DOMAIN,
-        //    client_id: "dnphgXcg0zeYBOCWwnRW8Xhq8Oif9A06",
-        //    redirect_uri: "http://localhost:8080/callback.html",
-        //    response_type: "id_token token",
-        //    scope: "openid profile email",
-        //    post_logout_redirect_uri: "http://localhost:8080/",
-        //    filterProtocolClaims: true,
-        //    metadata: {
-        //        issuer: AUTH0_DOMAIN + "/",
-        //        authorization_endpoint: AUTH0_DOMAIN + "/authorize",
-        //        userinfo_endpoint: AUTH0_DOMAIN + "/userinfo",
-        //        end_session_endpoint: AUTH0_DOMAIN + "/v2/logout",
-        //        jwks_uri: AUTH0_DOMAIN + "/.well-known/jwks.json",
-        //    }
-        //};
-
 
         const userManagerSettings: UserManagerSettings = {
             authority: "https://localhost:5001",
@@ -53,10 +33,9 @@ export default class AuthService {
             scope: "openid profile api1",
             post_logout_redirect_uri: "https://localhost:44367/",
             userStore: new WebStorageStateStore({ store: window.localStorage }),
-
-            //automaticSilentRenew: true,
-            //silent_redirect_uri: 'https://localhost:44367/static/silent-renew.html',
-            //accessTokenExpiringNotificationTime: 10,
+            automaticSilentRenew: true,
+            silent_redirect_uri: 'https://localhost:44367/silent-renew.html',
+            accessTokenExpiringNotificationTime: 10,
             //   filterProtocolClaims: true,
             //   loadUserInfo: true
         };
