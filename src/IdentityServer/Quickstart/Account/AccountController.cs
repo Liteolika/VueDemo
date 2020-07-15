@@ -116,7 +116,7 @@ namespace IdentityServerHost.Quickstart.UI
                 var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
 
                 // validate username/password against in-memory store
-                if (user != null & (await _signInManager.CheckPasswordSignInAsync(user, model.Password, true)) == SignInResult.Success)
+                if (user != null && (await _signInManager.CheckPasswordSignInAsync(user, model.Password, true) == SignInResult.Success))
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
 
