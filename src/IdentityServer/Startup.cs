@@ -1,17 +1,10 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Security.Claims;
 using IdentityServer.Data;
+using IdentityServer4.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -53,7 +46,6 @@ namespace IdentityServer
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-
 
             var identityServerBuilder = services.AddIdentityServer(options =>
                 {
@@ -177,28 +169,31 @@ namespace IdentityServer
             var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+            var defaultRole = new IdentityRole("users");
+            var defaultClaim = new Claim("api1", "true");
+
             if (!roleManager.Roles.Any())
             {
-                var role = new IdentityRole("user");
-                AsyncHelpers.RunSync(() => roleManager.CreateAsync(role));
+                AsyncHelpers.RunSync(() => roleManager.CreateAsync(defaultRole));
             }
 
             if (!userManager.Users.Any())
             {
                 var user = new IdentityUser()
                 {
-                    UserName = "user",
-                    Email = "user@user.com"
+                    UserName = "test",
+                    Email = "test@liteolika.se"
                 };
 
-                IdentityResult result = AsyncHelpers.RunSync(() => userManager.CreateAsync(user, "2fast4U!"));
+                IdentityResult result = AsyncHelpers.RunSync(() => userManager.CreateAsync(user, "TheSecret2020!"));
 
                 if (result == IdentityResult.Success)
                 {
-                    AsyncHelpers.RunSync(() => userManager.AddToRoleAsync(user, "user"));
+                    AsyncHelpers.RunSync(() => userManager.AddToRoleAsync(user, defaultRole.Name));
+                    AsyncHelpers.RunSync(() => userManager.AddClaimAsync(user, defaultClaim));
 
                 }
-
+                
             }
 
             

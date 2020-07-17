@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="home">
         <img alt="Vue logo" width="50" src="../assets/logo.png">
-        <h1>Welcome to Your Vue.js App</h1>
+        <h1>Vue Demo</h1>
         <table class="table table-sm table-hover table-striped table-bordered">
             <thead>
                 <tr>
@@ -28,6 +28,7 @@
     import axios from 'axios';
     import moment from "moment";
 
+    import authService from "../services/auth";
 
     @Component({
         filters: {
@@ -47,7 +48,12 @@
             { name: 'Date', label: 'Date', field: (row: IWeatherForecast) => row.date + " - " + moment(row.date).local().format("YYYY-MM-DD HH:mm:ss") },
         ];
         public async mounted() {
-            this.loadForecasts()
+            this.loadForecasts();
+            await authService.getAccessToken();
+            await authService.getAccessToken();
+            await authService.getAccessToken();
+            await authService.getAccessToken();
+            await authService.getAccessToken();
         }
 
         public async loadForecasts() {

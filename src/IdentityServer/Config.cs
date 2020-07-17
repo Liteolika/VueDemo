@@ -1,13 +1,6 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
-using IdentityServer4.Models;
+﻿using IdentityServer4.Models;
 using System.Collections.Generic;
-using System.Security.Claims;
 using IdentityServer4;
-using IdentityServer4.Test;
 
 namespace IdentityServer
 {
@@ -51,8 +44,8 @@ namespace IdentityServer
                     RequireConsent = false,
 
                     RedirectUris = {
-                        "https://localhost:44367/callback.html",
-                        "https://localhost:44367/silent-renew.html"
+                        "https://localhost:44367/oidc-callback",
+                        "https://localhost:44367/oidc-silent-renew"
                     },
 
                     PostLogoutRedirectUris = { "https://localhost:44367/" },
@@ -65,23 +58,6 @@ namespace IdentityServer
                         "api1"
                     },
                 }
-            };
-
-        public static IEnumerable<TestUser> Testusers =>
-            new TestUser[]
-            {
-                new TestUser
-                {
-                    Username = "test",
-                    Password = "test",
-                    SubjectId = Guid.NewGuid().ToString(),
-                    ProviderSubjectId = Guid.NewGuid().ToString(),
-                    Claims = new Claim[]
-                    {
-                        new Claim("api1", "true")
-                    }
-                }
-
             };
 
     }

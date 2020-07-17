@@ -1,12 +1,13 @@
 ﻿import Vue from "vue";
-import Router, { Route, NavigationGuardNext } from "vue-router";
-import Store from "./store";
+import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Secret from "./views/Secret.vue";
 import Unauthorized from "./views/Unauthorized.vue";
 import About from "./views/About.vue";
+import OidcCallback from "./views/OidcCallback.vue";
+import OidcSilentRenew from "./views/OidcSilentRenew.vue";
 
-import AuthService from "./services/auth";
+import authService from "./services/auth";
 
 Vue.use(Router);
 
@@ -32,15 +33,23 @@ const routes = [
     {
         path: "/secret",
         name: "secret",
-        meta: {
-            requiresAuth: true
-        },
+        meta: { requiresAuth: true },
         component: Secret
     },
     {
         path: "/unauthorized",
         name: "Unauthorized",
         component: Unauthorized
+    },
+    {
+        path: "/oidc-callback",
+        name: "oidc-callback",
+        component: OidcCallback
+    },
+    {
+        path: "/oidc-silent-renew",
+        name: "oidc-silent-renew",
+        component: OidcSilentRenew
     }
 ];
 
@@ -50,9 +59,7 @@ const router = new Router({
     routes: routes
 });
 
-
 router.beforeEach((to, from, next) => {
-    const authService = new AuthService();
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
@@ -61,7 +68,6 @@ router.beforeEach((to, from, next) => {
             if (isLoggedIn) {
                 next();
             } else {
-
                 authService.login().then(() => {
                     next({
                         path: "/",
@@ -71,8 +77,6 @@ router.beforeEach((to, from, next) => {
                     console.log(error);
                     next();
                 });
-
-
             }
         });
     } else {
