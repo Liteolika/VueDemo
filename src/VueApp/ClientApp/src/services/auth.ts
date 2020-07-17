@@ -22,7 +22,7 @@ const createAuthService = (): AuthService => {
         redirect_uri: "https://localhost:44367/oidc-callback",
         response_type: "id_token token",
         scope: "openid profile api1",
-        post_logout_redirect_uri: "https://localhost:44367/",
+        post_logout_redirect_uri: "https://localhost:44367/oidc-signout-callback",
         userStore: new WebStorageStateStore({ store: window.localStorage }),
         automaticSilentRenew: true,
         silent_redirect_uri: "https://localhost:44367/oidc-silent-renew",

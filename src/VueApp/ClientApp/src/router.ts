@@ -6,6 +6,7 @@ import Unauthorized from "./views/Unauthorized.vue";
 import About from "./views/About.vue";
 import OidcCallback from "./views/OidcCallback.vue";
 import OidcSilentRenew from "./views/OidcSilentRenew.vue";
+import OidcSignoutCallback from "./views/OidcSignoutCallback.vue";
 
 import authService from "./services/auth";
 
@@ -45,6 +46,11 @@ const routes = [
         path: "/oidc-callback",
         name: "oidc-callback",
         component: OidcCallback
+    },
+    {
+        path: "/oidc-signout-callback",
+        name: "oidc-signout-callback",
+        component: OidcSignoutCallback
     },
     {
         path: "/oidc-silent-renew",

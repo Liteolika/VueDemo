@@ -31,7 +31,7 @@ namespace IdentityServer
                 new Client
                 {
                     ClientId = "js",
-                    ClientName = "VueJs JavaScript Client",
+                    ClientName = "Vue Demo Client Application",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
 
@@ -45,10 +45,11 @@ namespace IdentityServer
 
                     RedirectUris = {
                         "https://localhost:44367/oidc-callback",
-                        "https://localhost:44367/oidc-silent-renew"
+                        "https://localhost:44367/oidc-silent-renew",
+                        "https://localhost:44367/oidc-signout-callback"
                     },
-
-                    PostLogoutRedirectUris = { "https://localhost:44367/" },
+                    
+                    PostLogoutRedirectUris = { "https://localhost:44367/oidc-signout-callback" },
                     AllowedCorsOrigins = { "https://localhost:44367" },
 
                     AllowedScopes =
