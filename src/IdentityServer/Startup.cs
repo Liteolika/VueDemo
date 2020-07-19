@@ -45,7 +45,9 @@ namespace IdentityServer
                 }
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services
+                .AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             var identityServerBuilder = services.AddIdentityServer(options =>
                 {
