@@ -1,32 +1,51 @@
 ﻿<template>
     <div class="home">
-        <img alt="Vue logo" width="50" src="../assets/logo.png">
         <h1>Vue Demo</h1>
-        <table class="table table-sm table-hover table-striped table-bordered" v-show="loggedIn">
-            <thead>
-                <tr>
-                    <th v-for="(item, index) in forecastCols" v-bind:key="index">
-                        {{ item.label | capitalize }}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, index) in forecasts" v-bind:key="index">
-                    <td v-for="(col, index) in forecastCols" v-bind:key="index">
-                        {{ col.field(item) }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <input type="button" class="btn btn-primary" v-on:click="loadForecasts()" value="Reload" />
-        <div v-show="!loggedIn">
-            <input type="button" class="btn btn-primary" v-on:click="login()" value="Login" />
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-sm table-hover table-striped table-bordered" v-show="loggedIn">
+                    <thead>
+                        <tr>
+                            <th v-for="(item, index) in forecastCols" v-bind:key="index">
+                                {{ item.label | capitalize }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in forecasts" v-bind:key="index">
+                            <td v-for="(col, index) in forecastCols" v-bind:key="index">
+                                {{ col.field(item) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div v-show="loggedIn">
-            <input type="button" class="btn btn-primary" v-on:click="logout()" value="Logout" />
+        <div class="row">
+            <div class="col-md-12">
+                <input type="button" class="btn btn-primary" v-on:click="loadForecasts()" value="Reload" />
+            </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div v-show="!loggedIn">
+                    <input type="button" class="btn btn-primary" v-on:click="login()" value="Login" />
+                </div>
+                <div v-show="loggedIn">
+                    <input type="button" class="btn btn-primary" v-on:click="logout()" value="Logout" />
+                </div>
+            </div>
+        </div>
+
+
     </div>
-    
+
 </template>
 
 <script lang="ts">

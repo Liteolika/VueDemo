@@ -23,19 +23,21 @@ namespace VueApp
         {
             services.AddControllers();
 
-            services.AddSpaStaticFiles(configuration =>
+            services
+                .AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            services.AddAuthentication("Bearer")
+            services
+                .AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
                     options.Authority = "https://localhost:5001";
-
+                    
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateAudience = false
+                        ValidateAudience = false,
                     };
                 });
 
