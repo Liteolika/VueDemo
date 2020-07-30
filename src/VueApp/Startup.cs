@@ -11,12 +11,12 @@ namespace VueApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public IWebHostEnvironment Environment { get; }
 
-        public IConfiguration Configuration { get; }
+        public Startup(IWebHostEnvironment environment)
+        {
+            Environment = environment;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -49,6 +49,12 @@ namespace VueApp
                     policy.RequireClaim("scope", "api1");
                 });
             });
+
+            if (Environment.IsProduction())
+            {
+                services.AddApplicationInsightsTelemetry();
+            }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -44,13 +44,13 @@ namespace IdentityServer
                     RequireConsent = false,
 
                     RedirectUris = {
-                        "https://localhost:44367/oidc-callback",
-                        "https://localhost:44367/oidc-silent-renew",
-                        "https://localhost:44367/oidc-signout-callback"
+                        "https://localhost:5003/oidc-callback",
+                        "https://localhost:5003/oidc-silent-renew",
+                        "https://localhost:5003/oidc-signout-callback"
                     },
                     
-                    PostLogoutRedirectUris = { "https://localhost:44367/oidc-signout-callback" },
-                    AllowedCorsOrigins = { "https://localhost:44367" },
+                    PostLogoutRedirectUris = { "https://localhost:5003/oidc-signout-callback" },
+                    AllowedCorsOrigins = { "https://localhost:5003" },
 
                     AllowedScopes =
                     {

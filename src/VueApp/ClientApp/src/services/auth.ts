@@ -19,13 +19,13 @@ const createAuthService = (): AuthService => {
     const userManagerSettings: UserManagerSettings = {
         authority: "https://localhost:5001",
         client_id: "js",
-        redirect_uri: "https://localhost:44367/oidc-callback",
+        redirect_uri: "https://localhost:5003/oidc-callback",
         response_type: "id_token token",
         scope: "openid profile api1",
-        post_logout_redirect_uri: "https://localhost:44367/oidc-signout-callback",
+        post_logout_redirect_uri: "https://localhost:5003/oidc-signout-callback",
         userStore: new WebStorageStateStore({ store: window.localStorage }),
         automaticSilentRenew: true,
-        silent_redirect_uri: "https://localhost:44367/oidc-silent-renew",
+        silent_redirect_uri: "https://localhost:5003/oidc-silent-renew",
         accessTokenExpiringNotificationTime: 60,
         filterProtocolClaims: true,
         loadUserInfo: true

@@ -91,6 +91,12 @@ namespace IdentityServer
 
             // not recommended for production - you need to store your key material somewhere secure
             identityServerBuilder.AddDeveloperSigningCredential();
+
+            if (Environment.IsProduction())
+            {
+                services.AddApplicationInsightsTelemetry();
+            }
+
         }
 
         public void Configure(IApplicationBuilder app)
