@@ -42,7 +42,18 @@
                 </div>
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Editable Grid Component</h3>
+                <thebutton :name="name" :initialEnthusiasm="5"></thebutton>
+                <thebutton :name="name" :initialEnthusiasm="5"></thebutton>
+            </div>
+        </div>
 
     </div>
 
@@ -55,6 +66,7 @@
     import moment from "moment";
 
     import authService from "../services/auth";
+    import thebutton from "../components/TheButton.vue";
 
     @Component({
         filters: {
@@ -64,6 +76,9 @@
                 return value.charAt(0).toUpperCase() + value.slice(1);
             },
         },
+        components: {
+            thebutton
+        }
     })
     export default class Home extends Vue {
         private forecasts: IWeatherForecast[] = [{ summary: 'No data.' } as IWeatherForecast];

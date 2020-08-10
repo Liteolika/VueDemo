@@ -3,8 +3,6 @@
 import { RootState } from "..";
 import { AUTH_LOGIN } from "../actions.type";
 
-import usermanager from "../../services/authentificationService";
-
 // initial state
 const state = () => ({
     authenticated: false,
