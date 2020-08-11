@@ -50,8 +50,10 @@
         <div class="row">
             <div class="col-md-12">
                 <h3>Editable Grid Component</h3>
-                <thebutton :name="name" :initialEnthusiasm="5"></thebutton>
-                <thebutton :name="name" :initialEnthusiasm="5"></thebutton>
+                Name: <input v-model="name1" type="text">
+                <thebutton :name="name1" :initialEnthusiasm="1"></thebutton>
+                Name: <input v-model="name2" type="text">
+                <thebutton :name="name2" :initialEnthusiasm="2"></thebutton>
             </div>
         </div>
 
@@ -76,6 +78,7 @@
                 return value.charAt(0).toUpperCase() + value.slice(1);
             },
         },
+        props: [ "name1", "name2" ],
         components: {
             thebutton
         }
