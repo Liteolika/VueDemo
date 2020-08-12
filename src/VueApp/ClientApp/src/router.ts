@@ -8,6 +8,8 @@ import OidcCallback from "./views/OidcCallback.vue";
 import OidcSilentRenew from "./views/OidcSilentRenew.vue";
 import OidcSignoutCallback from "./views/OidcSignoutCallback.vue";
 
+import Editor from "./views/Editor.vue";
+
 import authService from "./services/auth";
 
 Vue.use(Router);
@@ -56,6 +58,11 @@ const routes = [
         path: "/oidc-silent-renew",
         name: "oidc-silent-renew",
         component: OidcSilentRenew
+    },
+    {
+        path: "/editor",
+        name: "editor",
+        component: Editor
     }
 ];
 

@@ -34,6 +34,9 @@
                         <li class="nav-item">
                             <router-link class="nav-link" to="/about">About</router-link>
                         </li>
+                        <li class="nav-item">
+                            <router-link class="nav-link" to="/editor">Editor</router-link>
+                        </li>
                     </ul>
                 </div>
 
@@ -56,8 +59,11 @@
     import "bootstrap/dist/css/bootstrap.css";
     import "bootstrap-vue/dist/bootstrap-vue.css";
 
-    Vue.use(BootstrapVue)
-    Vue.use(IconsPlugin)
+    import Vue2Editor from "vue2-editor";
+
+    Vue.use(BootstrapVue);
+    Vue.use(IconsPlugin);
+    Vue.use(Vue2Editor);
 
     @Component
     export default class App extends Vue {
