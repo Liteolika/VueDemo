@@ -59,6 +59,9 @@
     import "bootstrap/dist/css/bootstrap.css";
     import "bootstrap-vue/dist/bootstrap-vue.css";
 
+    import "devextreme/dist/css/dx.common.css";
+    import "devextreme/dist/css/dx.light.css";
+
     import Vue2Editor from "vue2-editor";
 
     Vue.use(BootstrapVue);
