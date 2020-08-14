@@ -56,6 +56,11 @@
                 <thebutton :name="name2" :initialEnthusiasm="2"></thebutton>
             </div>
         </div>
+        <div class="row">
+            <DxSwitch :value="true" />
+            <DxButton text="Click me" @click="sayHelloWorld" />
+            <DxColorBox value="#f05b41" />
+        </div>
 
     </div>
 
@@ -69,6 +74,9 @@
 
     import authService from "../services/auth";
     import thebutton from "../components/TheButton.vue";
+    import DxButton from "devextreme-vue/button";
+    import DxColorBox from "devextreme-vue/color-box";
+    import { DxSwitch } from "devextreme-vue/switch";
 
     @Component({
         filters: {
@@ -80,7 +88,15 @@
         },
         props: [ "name1", "name2" ],
         components: {
-            thebutton
+            thebutton,
+            DxButton,
+            DxColorBox,
+            DxSwitch
+        },
+        methods: {
+            sayHelloWorld() {
+                alert("Hello world!");
+            }
         }
     })
     export default class Home extends Vue {
