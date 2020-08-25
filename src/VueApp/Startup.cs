@@ -55,6 +55,12 @@ namespace VueApp
                 services.AddApplicationInsightsTelemetry();
             }
 
+            if (Environment.IsDevelopment())
+            {
+                services.AddOpenApiDocument();
+            }
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,10 +78,17 @@ namespace VueApp
             app.UseAuthentication();
             app.UseAuthorization();
 
+            if (env.IsDevelopment())
+            {
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
+            }
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers()
-                    .RequireAuthorization("ApiScope");
+                //endpoints.MapControllers()
+                //    .RequireAuthorization("ApiScope");
+                endpoints.MapControllers();
 
                 endpoints.MapToVueCliProxy(
                     "{*path}",
@@ -84,7 +97,12 @@ namespace VueApp
                     regex: "Compiled successfully",
                     forceKill: true
                 );
+
+
             });
+
+            
+
         }
     }
 }
