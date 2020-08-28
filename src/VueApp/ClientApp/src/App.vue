@@ -66,7 +66,7 @@
 
     Vue.use(BootstrapVue);
     Vue.use(IconsPlugin);
-    Vue.use(Vue2Editor);
+    //Vue.use(Vue2Editor);
 
     @Component
     export default class App extends Vue {

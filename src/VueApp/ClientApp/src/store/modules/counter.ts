@@ -11,7 +11,7 @@ const state = () => ({
 // getters
 const getters = {
 
-}
+};
 
 // actions
 const actions = {
@@ -21,7 +21,7 @@ const actions = {
     [COUNTER_DECREMENT](context: ActionContext<CounterState, RootState>) {
         context.commit("decrement");
     }
-}
+};
 
 // mutations
 const mutations = {
@@ -31,7 +31,7 @@ const mutations = {
     decrement(state: CounterState) {
         state.count--;
     }
-}
+};
 
 export default {
     namespaced: false,
@@ -39,7 +39,7 @@ export default {
     getters,
     actions,
     mutations
-}
+};
 
 export interface CounterState {
     count: number;

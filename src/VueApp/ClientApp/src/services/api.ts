@@ -1,5 +1,6 @@
 ﻿import axios from "axios"
 import authService from "./auth"
+import { IEditorData } from "@/models";
 
 export function initAxios() {
 
@@ -13,7 +14,12 @@ export function initAxios() {
     });
 }
 
+const serviceUrl = "https://localhost:5003";
 
+const http = axios.create({
+    baseURL: `${serviceUrl}/api`,
+    headers: { 'Content-Type': "application/json" }
+})
 
 export function getSecretMessage() {
     return axios("http://localhost:7000/api/secretMessage",
@@ -22,11 +28,13 @@ export function getSecretMessage() {
         });
 }
 
-export function postContent(content: string) {
-    console.log("posting content:", content);
-    return axios("https://localhost:5003/api/editor",
-        {
-            method: "post",
-            data: { "Content": content }
-        });
+export async function postEditorContent(content: string): Promise<IEditorData> {
+
+    const data = {
+        "Content": content
+    };
+
+    const response = await http.post("editor", JSON.stringify(data));
+    return response.data;
+
 }

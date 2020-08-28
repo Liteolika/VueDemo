@@ -10,27 +10,25 @@
 </template>
 
 <script lang="ts">
-    import store, { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../store"
-    import { mapGetters, mapActions } from "vuex"
+    import store, { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../store";
+    import { mapGetters, mapActions } from "vuex";
+    import { Component, Vue } from "vue-property-decorator";
 
-    export default {
-        name: "about",
-        computed: {
-            count() {
-                return store.state.counter.count
-            }
-        },
-        methods: {
-            increment() {
-                store.dispatch(COUNTER_INCREMENT);
-            },
-            decrement() {
-                store.dispatch(COUNTER_DECREMENT);
-            }
+    @Component
+    export default class Counter extends Vue {
+
+        get count() {
+            return store.state.counter.count;
         }
+
+        private increment() {
+            store.dispatch(COUNTER_INCREMENT);
+        }
+
+        private decrement() {
+            store.dispatch(COUNTER_DECREMENT);
+        }
+
     }
-
-
-
 
 </script>

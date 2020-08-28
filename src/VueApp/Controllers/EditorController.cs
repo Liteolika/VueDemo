@@ -15,17 +15,20 @@ namespace VueApp.Controllers
     public class EditorController : ControllerBase
     {
         [HttpPost]
-        public async Task<string> Save(EditorData data)
+        public async Task<EditorData> Save(EditorData data)
         {
             await Task.Delay(1);
 
-            return data.Content;
+            data.Saved = true;
+            return data;
+
         }
 
     }
 
     public class EditorData
     {
+        public bool Saved { get; set; }
         public string Content { get; set; }
     }
 

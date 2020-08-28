@@ -6,31 +6,30 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+    import Vue from "vue";
     import { VueEditor } from "vue2-editor";
 
-    import { postContent } from "../services/api";
+    import { postEditorContent } from "../services/api";
+    import Component from "vue-class-component";
 
-    export default {
-        components: { VueEditor },
+    import { IEditorData } from "../models";
 
-        data: () => ({
-            content: "<h1>Some initial content</h1>",
-            customToolbar: [
-                ["bold", "italic", "underline"],
-                [{ list: "ordered" }, { list: "bullet" }],
-                ["image", "code-block"]
-            ]
-        }),
-        methods: {
-            save: function () {
-                postContent(this.content)
-                    .then(() => { alert("saved!") })
-                    .catch((err) => console.log(err));
-            }
+    @Component({
+        components: {
+            VueEditor,
         }
-    };
+    })
+    export default class Editor extends Vue {
 
+        private content: string = "<h1>Some initial content</h1>";
 
+        public save() {
+            postEditorContent(this.content).then((data: IEditorData) => {
+                console.log(data);
+            }).catch((err) => console.log(err));
+        }
+
+    }
 
 </script>

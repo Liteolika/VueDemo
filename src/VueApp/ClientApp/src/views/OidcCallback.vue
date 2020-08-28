@@ -3,11 +3,13 @@
 </template>
 
 <script lang="ts">
+    import Vue from "vue";
+    import Component from "vue-class-component";
     import authService from "../services/auth";
 
-    export default {
-        name: "about",
-        mounted() {
+    @Component
+    export default class OidcCallback extends Vue {
+        private mounted() {
             authService.userManager.signinRedirectCallback().then(function (user) {
                 console.log("vue-oidc-callback-success");
                 window.location.href = "../";
