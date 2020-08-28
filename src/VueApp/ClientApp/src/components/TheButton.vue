@@ -17,7 +17,7 @@
         data() {
             return {
                 enthusiasm: this.initialEnthusiasm
-            }
+            };
         },
         methods: {
             increment() { this.enthusiasm++; },
@@ -29,10 +29,10 @@
         },
         computed: {
             exclamationMarks(): string {
-                return Array(this.enthusiasm + 1).join('!');
+                return Array(this.enthusiasm + 1).join("!");
             },
             displayName(): string {
-                return this.name
+                return this.name;
             }
         }
     });

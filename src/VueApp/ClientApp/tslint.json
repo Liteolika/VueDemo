@@ -12,6 +12,7 @@
     "indent": [ true, "spaces", 2 ],
     "interface-name": false,
     "no-consecutive-blank-lines": false,
+    "object-literal-shorthand": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "quotemark": [ true, "double" ],
@@ -19,6 +20,7 @@
     "space-before-function-paren": false,
     "only-arrow-functions": false,
     "trailing-comma": false,
-    "comment-format": [false, "check-space" ]
+    "comment-format": [ false, "check-space" ],
+    "eofline": false
   }
 }

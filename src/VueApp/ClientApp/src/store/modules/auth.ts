@@ -1,10 +1,10 @@
-﻿import { Store, ActionContext } from "vuex"
+﻿import { Store, ActionContext } from "vuex";
 
 import { RootState } from "..";
 import { AUTH_LOGIN } from "../actions.type";
 
 // initial state
-const state = () => ({
+const initialState = (): AuthState => ({
     authenticated: false,
     username: ""
 });
@@ -12,13 +12,12 @@ const state = () => ({
 // getters
 const getters = {
 
-}
+};
 
 const AUTH_SUCCESS = "auth_success";
 
 // actions
 const actions = {
-
     async [AUTH_LOGIN](context: ActionContext<AuthState, RootState>) {
         context.commit(AUTH_SUCCESS);
     }
@@ -28,7 +27,7 @@ const actions = {
     //[COUNTER_DECREMENT](context: ActionContext<CounterState, RootState>) {
     //    context.commit("decrement");
     //}
-}
+};
 
 // mutations
 const mutations = {
@@ -43,15 +42,15 @@ const mutations = {
     //decrement(state: AuthState) {
     //    state.count--;
     //}
-}
+};
 
 export default {
     namespaced: false,
-    state,
+    state: initialState,
     getters,
     actions,
     mutations
-}
+};
 
 export interface AuthState {
     authenticated: boolean;

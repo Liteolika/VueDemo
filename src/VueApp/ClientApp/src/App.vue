@@ -51,7 +51,7 @@
 
 <script lang="ts">
 
-
+    import Vuex from "vuex";
     import { Component, Vue } from "vue-property-decorator";
 
     import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
@@ -67,10 +67,10 @@
     Vue.use(BootstrapVue);
     Vue.use(IconsPlugin);
     //Vue.use(Vue2Editor);
+    Vue.use(Vuex);
 
     @Component
     export default class App extends Vue {
-        
     }
 
 </script>

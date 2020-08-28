@@ -37,26 +37,26 @@ const createAuthService = (): AuthService => {
 
     const getUser = (): Promise<User | null> => {
         return userManager.getUser();
-    }
+    };
 
     const login = (): Promise<void> => {
         return userManager.signinRedirect();
-    }
+    };
 
     const logout = (): Promise<void> => {
         userManager.clearStaleState();
         return userManager.signoutRedirect();
-    }
+    };
 
     const getAccessToken = async (): Promise<string | null> => {
         const user: User | null = await getUser();
         return user === null ? null : user.access_token;
-    }
+    };
 
     const isLoggedIn = async (): Promise<boolean> => {
         const user: User | null = await getUser();
         return (user !== null && !user.expired);
-    }
+    };
 
     return {
         userManager,
@@ -67,7 +67,7 @@ const createAuthService = (): AuthService => {
         isLoggedIn
 
     } as AuthService;
-}
+};
 
 const authService = createAuthService();
 

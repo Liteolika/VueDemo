@@ -74,7 +74,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
 
-    if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
         authService.isLoggedIn().then((isLoggedIn: boolean) => {
@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
                         path: "/",
                         query: { redirect: to.fullPath }
                     });
-                }).catch(error => {
+                }).catch((error) => {
                     console.log(error);
                     next();
                 });

@@ -1,12 +1,9 @@
-﻿import { Store, ActionContext } from "vuex"
+﻿import { Store, ActionContext } from "vuex";
 
 import { RootState } from "..";
 import { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../actions.type";
 
-// initial state
-const state = () => ({
-    count: 10
-});
+
 
 // getters
 const getters = {
@@ -33,9 +30,14 @@ const mutations = {
     }
 };
 
+// initial state
+const initialState = (): CounterState => ({
+    count: 10
+});
+
 export default {
     namespaced: false,
-    state,
+    initialState,
     getters,
     actions,
     mutations
