@@ -9,15 +9,15 @@ export * from "./actions.type";
 
 Vue.use(Vuex);
 
-const persistOptions: PersistOptions<RootState> = {
+const persistOptions: PersistOptions<IRootState> = {
     key: "counterstate",
     storage: window.localStorage,
     modules: ["counter"]
 };
 
-const vuexLocal = new VuexPersistence<RootState>(persistOptions);
+const vuexLocal = new VuexPersistence<IRootState>(persistOptions);
 
-const storeOptions: StoreOptions<RootState> = {
+const storeOptions: StoreOptions<IRootState> = {
     plugins: [
         createLogger(),
         vuexLocal.plugin
@@ -28,9 +28,9 @@ const storeOptions: StoreOptions<RootState> = {
     }
 };
 
-export default new Vuex.Store<RootState>(storeOptions);
+export default new Vuex.Store<IRootState>(storeOptions);
 
-export interface RootState {
+export interface IRootState {
     counter: CounterState;
     auth: AuthState;
 }
