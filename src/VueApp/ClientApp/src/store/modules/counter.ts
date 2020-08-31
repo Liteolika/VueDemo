@@ -7,6 +7,8 @@ import { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../actions.type";
 const getters = {
 
 };
+// https://dev.to/sirtimbly/type-safe-vuex-state-usage-in-components-without-decorators-2b24
+// https://codeburst.io/vuex-and-typescript-3427ba78cfa8
 
 // actions
 const actions = {
