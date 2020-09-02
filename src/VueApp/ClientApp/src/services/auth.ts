@@ -1,4 +1,5 @@
-﻿import Oidc, { UserManager, WebStorageStateStore, WebStorageStateStoreSettings, User, UserManagerSettings, Log } from "oidc-client";
+﻿/* eslint-disable @typescript-eslint/camelcase */
+import Oidc, { UserManager, WebStorageStateStore, WebStorageStateStoreSettings, User, UserManagerSettings, Log } from "oidc-client";
 
 Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;

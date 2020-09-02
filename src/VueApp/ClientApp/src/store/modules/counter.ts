@@ -1,49 +1,42 @@
-﻿import { Store, ActionContext } from "vuex";
+﻿import { VuexModule, Module, getModule, Action, Mutation, MutationAction } from "vuex-module-decorators";
+import store from "../index";
 
-import { IRootState } from "..";
-import { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../actions.type";
+@Module({
+    namespaced: true,
+    name: "counter",
+    store: store,
+    dynamic: true,
+    preserveState: true
+})
+class CounterModule extends VuexModule {
+    private counter: number = 0;
 
-// getters
-const getters = {
-
-};
-// https://dev.to/sirtimbly/type-safe-vuex-state-usage-in-components-without-decorators-2b24
-// https://codeburst.io/vuex-and-typescript-3427ba78cfa8
-// https://polyrithm-technologies.storychief.io/vuex-with-typescript
-
-// actions
-const actions = {
-    [COUNTER_INCREMENT](context: ActionContext<CounterState, IRootState>) {
-        context.commit("increment");
-    },
-    [COUNTER_DECREMENT](context: ActionContext<CounterState, IRootState>) {
-        context.commit("decrement");
+    @Mutation
+    public incrementCounter() {
+        this.counter++;
     }
-};
 
-// mutations
-const mutations = {
-    increment(state: CounterState) {
-        state.count++;
-    },
-    decrement(state: CounterState) {
-        state.count--;
+    @Mutation
+    public decrementCounter() {
+        this.counter--;
     }
-};
 
-// initial state
-const initialState = (): CounterState => ({
-    count: 10
-});
+    @Action({ commit: "incrementCounter" })
+    public increment() {
+        return this.counter;
+    }
 
-export default {
-    namespaced: false,
-    initialState,
-    getters,
-    actions,
-    mutations
-};
+    @Action({ commit: "decrementCounter" })
+    public decrement() {
+        return this.counter;
+    }
 
-export interface CounterState {
-    count: number;
+    public get getCounter() {
+        return this.counter;
+    }
 }
+export default getModule(CounterModule);
+
+//// https://dev.to/sirtimbly/type-safe-vuex-state-usage-in-components-without-decorators-2b24
+//// https://codeburst.io/vuex-and-typescript-3427ba78cfa8
+//// https://polyrithm-technologies.storychief.io/vuex-with-typescript
