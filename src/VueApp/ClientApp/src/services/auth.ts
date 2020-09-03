@@ -1,5 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/camelcase */
-import Oidc, { UserManager, WebStorageStateStore, WebStorageStateStoreSettings, User, UserManagerSettings, Log } from "oidc-client";
+import Oidc, { UserManager, WebStorageStateStore, User, UserManagerSettings, Log } from "oidc-client";
+import authStore from "../store/modules/auth";
 
 Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
@@ -13,64 +14,62 @@ export interface AuthService {
     isLoggedIn(): Promise<boolean>;
 }
 
-const createAuthService = (): AuthService => {
+class AuthServiceImpl implements AuthService {
 
-    console.log("createAuthService");
+    public userManager: UserManager = new UserManager(this.getUserManagerSettings());
 
-    const userManagerSettings: UserManagerSettings = {
-        authority: "https://localhost:5001",
-        client_id: "js",
-        redirect_uri: "https://localhost:5003/oidc-callback",
-        response_type: "id_token token",
-        scope: "openid profile api1",
-        post_logout_redirect_uri: "https://localhost:5003/oidc-signout-callback",
-        userStore: new WebStorageStateStore({ store: window.localStorage }),
-        automaticSilentRenew: true,
-        silent_redirect_uri: "https://localhost:5003/oidc-silent-renew",
-        accessTokenExpiringNotificationTime: 60,
-        filterProtocolClaims: true,
-        loadUserInfo: true
-    };
+    constructor() {
+        console.log("AuthServiceImpl:Constructor");
 
+        this.userManager.events.addUserSignedOut(() => {
+            authStore.userLoggedOut();
+        });
 
-    const userManager: UserManager = new UserManager(userManagerSettings);
-    //let user: User;
+        this.userManager.events.addUserLoaded(() => {
+            authStore.userLoggedIn();
+        });
+    }
 
-    const getUser = (): Promise<User | null> => {
-        return userManager.getUser();
-    };
+    public getUser(): Promise<User | null> {
+        return this.userManager.getUser();
+    }
 
-    const login = (): Promise<void> => {
-        return userManager.signinRedirect();
-    };
+    public login(): Promise<void> {
+        return this.userManager.signinRedirect();
+    }
 
-    const logout = (): Promise<void> => {
-        userManager.clearStaleState();
-        return userManager.signoutRedirect();
-    };
+    public logout(): Promise<void> {
+        this.userManager.clearStaleState();
+        return this.userManager.signoutRedirect();
+    }
 
-    const getAccessToken = async (): Promise<string | null> => {
-        const user: User | null = await getUser();
+    public async getAccessToken(): Promise<string | null> {
+        const user: User | null = await this.getUser();
         return user === null ? null : user.access_token;
-    };
+    }
 
-    const isLoggedIn = async (): Promise<boolean> => {
-        const user: User | null = await getUser();
+    public async isLoggedIn(): Promise<boolean> {
+        const user: User | null = await this.getUser();
         return (user !== null && !user.expired);
-    };
+    }
 
-    return {
-        userManager,
-        getUser,
-        login,
-        logout,
-        getAccessToken,
-        isLoggedIn
+    private getUserManagerSettings(): UserManagerSettings {
+        return {
+            authority: "https://localhost:5001",
+            client_id: "js",
+            redirect_uri: "https://localhost:5003/oidc-callback",
+            response_type: "id_token token",
+            scope: "openid profile api1",
+            post_logout_redirect_uri: "https://localhost:5003/oidc-signout-callback",
+            userStore: new WebStorageStateStore({ store: window.localStorage }),
+            automaticSilentRenew: true,
+            silent_redirect_uri: "https://localhost:5003/oidc-silent-renew",
+            accessTokenExpiringNotificationTime: 60,
+            filterProtocolClaims: true,
+            loadUserInfo: true
+        };
+    }
 
-    } as AuthService;
-};
+}
 
-const authService = createAuthService();
-
-export default authService;
-
+export default new AuthServiceImpl();

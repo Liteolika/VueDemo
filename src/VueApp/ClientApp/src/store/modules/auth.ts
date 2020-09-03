@@ -1,58 +1,40 @@
-﻿//import { Store, ActionContext } from "vuex";
+﻿import { VuexModule, Module, getModule, Action, Mutation, MutationAction } from "vuex-module-decorators";
+import store from "../index";
 
-//import { RootState } from "..";
-//import { AUTH_LOGIN } from "../actions.type";
+@Module({
+    namespaced: true,
+    name: "auth",
+    store: store,
+    dynamic: true,
+    preserveState: true
+})
+class AuthModule extends VuexModule {
 
-//// initial state
-//const initialState = (): AuthState => ({
-//    authenticated: false,
-//    username: ""
-//});
+    private isLoggedIn: boolean = false;
 
-//// getters
-//const getters = {
+    @Action({ commit: "setLoggedIn" })
+    public userLoggedIn() {
+        return this.isLoggedIn;
+    }
 
-//};
+    @Action({ commit: "setLoggedOut" })
+    public userLoggedOut() {
+        return this.isLoggedIn;
+    }
 
-//const AUTH_SUCCESS = "auth_success";
+    @Mutation
+    private setLoggedIn() {
+        this.isLoggedIn = true;
+    }
 
-//// actions
-//const actions = {
-//    async [AUTH_LOGIN](context: ActionContext<AuthState, RootState>) {
-//        context.commit(AUTH_SUCCESS);
-//    }
-//    //[COUNTER_INCREMENT](context: ActionContext<CounterState, RootState>) {
-//    //    context.commit("increment");
-//    //},
-//    //[COUNTER_DECREMENT](context: ActionContext<CounterState, RootState>) {
-//    //    context.commit("decrement");
-//    //}
-//};
+    @Mutation
+    private setLoggedOut() {
+        this.isLoggedIn = false;
+    }
 
-//// mutations
-//const mutations = {
+}
+export default getModule(AuthModule);
 
-//    [AUTH_SUCCESS](state: AuthState) {
-//        state.authenticated = false;
-//        state.username = "";
-//    }
-//    //increment(state: AuthState) {
-//    //    state.count++;
-//    //},
-//    //decrement(state: AuthState) {
-//    //    state.count--;
-//    //}
-//};
-
-//export default {
-//    namespaced: false,
-//    state: initialState,
-//    getters,
-//    actions,
-//    mutations
-//};
-
-//export interface AuthState {
-//    authenticated: boolean;
-//    username: string;
-//}
+//// https://dev.to/sirtimbly/type-safe-vuex-state-usage-in-components-without-decorators-2b24
+//// https://codeburst.io/vuex-and-typescript-3427ba78cfa8
+//// https://polyrithm-technologies.storychief.io/vuex-with-typescript
