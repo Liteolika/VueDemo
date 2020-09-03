@@ -37,6 +37,9 @@
                         <li class="nav-item">
                             <router-link class="nav-link" to="/editor">Editor</router-link>
                         </li>
+                        <li class="nav-item">
+                            <router-link class="nav-link" to="/chat">Chat</router-link>
+                        </li>
                     </ul>
                 </div>
 

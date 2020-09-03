@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using VueApp.Hubs;
 using VueCliMiddleware;
 
 namespace VueApp
@@ -49,6 +50,8 @@ namespace VueApp
                     policy.RequireClaim("scope", "api1");
                 });
             });
+
+            services.AddSignalR();
 
             if (Environment.IsProduction())
             {
@@ -98,8 +101,10 @@ namespace VueApp
                     forceKill: true
                 );
 
-
+                endpoints.MapHub<ChatHub>("/chathub");
             });
+
+            
 
             
 

@@ -9,6 +9,7 @@ import OidcSilentRenew from "./views/OidcSilentRenew.vue";
 import OidcSignoutCallback from "./views/OidcSignoutCallback.vue";
 
 import Editor from "./views/Editor.vue";
+import Chat from "./views/Chat.vue";
 
 import authService from "./services/auth";
 
@@ -63,6 +64,11 @@ const routes = [
         path: "/editor",
         name: "editor",
         component: Editor
+    },
+    {
+        path: "/chat",
+        name: "chat",
+        component: Chat
     }
 ];
 
