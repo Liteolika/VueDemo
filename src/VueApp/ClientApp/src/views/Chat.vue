@@ -27,20 +27,15 @@
 
         constructor() {
             super();
-            this.startConnection();
+            this.connection.start().then(() => {
+                this.connection.on("RecieveMessage", this.onMessageRecieved);
+            });
         }
 
         private connection: HubConnection = new HubConnectionBuilder()
             .withUrl("/chathub")
             .configureLogging(LogLevel.Information)
             .build();
-
-        private startConnection() {
-            this.connection.start().then(() => {
-                this.connection.on("RecieveMessage", this.onMessageRecieved);
-            });
-            // Check how to restart/retry connection when failed.
-        }
 
         private messages: string[] = [];
         public message: string = "Your message";
@@ -55,6 +50,5 @@
             await this.connection.send("SendMessage", "da-user", this.message);
         }
     }
-
 
 </script>
