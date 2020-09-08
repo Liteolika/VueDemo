@@ -59,11 +59,13 @@
 
     import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 
-    import "bootstrap/dist/css/bootstrap.css";
-    import "bootstrap-vue/dist/bootstrap-vue.css";
+
+    import "@/style/sandstone/index.scss";
 
     import "devextreme/dist/css/dx.common.css";
     import "devextreme/dist/css/dx.light.css";
+
+    //https://bootstrap-vue.org/docs/reference/theming
 
     import Vue2Editor from "vue2-editor";
 
