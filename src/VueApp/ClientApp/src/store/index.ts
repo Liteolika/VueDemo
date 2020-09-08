@@ -17,7 +17,9 @@ const store = new Vuex.Store<any>({
     state: {},
     actions: {},
     mutations: {},
-    modules: {},
+    modules: {
+        
+    },
     plugins: [
         vuexLocalStorage.plugin
     ]

@@ -1,6 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/camelcase */
 import Oidc, { UserManager, WebStorageStateStore, User, UserManagerSettings, Log } from "oidc-client";
-import authStore from "../store/modules/auth";
+import authStore from "@/store/modules/auth";
 
 Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
@@ -19,15 +19,28 @@ class AuthServiceImpl implements AuthService {
     public userManager: UserManager = new UserManager(this.getUserManagerSettings());
 
     constructor() {
-        console.log("AuthServiceImpl:Constructor");
+        //console.log("AuthServiceImpl:Constructor");
+
+        this.userManager.getUser().then((user: User|null) => {
+            if (user !== null)
+                authStore.login();
+        });
 
         this.userManager.events.addUserSignedOut(() => {
-            authStore.userLoggedOut();
+            //console.log("addUserSignedOut");
+            this.userManager.getUser().then((user: User | null) => {
+                if (user !== null)
+                    authStore.login();
+                else
+                    authStore.logout();
+            });
         });
 
         this.userManager.events.addUserLoaded(() => {
-            authStore.userLoggedIn();
+            //console.log("addUserLoaded");
+            authStore.login();
         });
+
     }
 
     public getUser(): Promise<User | null> {

@@ -30,11 +30,7 @@
 
             this.appApi.postEditorContent(this.content).then((data: IEditorData) => {
                 console.log(data);
-            }).catch((err) => console.log(err)); 
-
-            //postEditorContent(this.content).then((data: IEditorData) => {
-            //    console.log(data);
-            //}).catch((err) => console.log(err));
+            }).catch((err) => console.log(err));
         }
 
     }

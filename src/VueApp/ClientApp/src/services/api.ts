@@ -6,7 +6,14 @@ declare module "axios" {
     interface AxiosResponse<T = any> extends Promise<T> { }
 }
 
-abstract class HttpClient {
+export interface IHttpClient {
+    get<TOut>(url: string): Promise<TOut>;
+    post<TIn, TOut>(url: string, data: TIn): Promise<TOut>;
+    put<TIn, TOut>(url: string, data: TIn): Promise<TOut>;
+    delete(url: string, params?: any): Promise<void>;
+}
+
+abstract class HttpClient implements IHttpClient {
     protected readonly instance: AxiosInstance;
 
     public constructor(baseURL: string) {
@@ -28,6 +35,21 @@ abstract class HttpClient {
 
     protected handleError = (error: any) => Promise.reject(error);
 
+    get = async <TOut>(url: string, params: any = null): Promise<TOut> => {
+        return await this.instance.get(url, { params: params });
+    }
+
+    post = async <TIn, TOut>(url: string, data: TIn): Promise<TOut> => {
+        return await this.instance.post(url, data);
+    }
+
+    put = async <TIn, TOut>(url: string, data: TIn): Promise<TOut> => {
+        return await this.instance.put(url, data);
+    }
+
+    delete = async (url: string, params?: any): Promise<void> => {
+        return await this.instance.delete(url, { params: params });
+    }
 }
 
 export interface IAppApi {
@@ -57,60 +79,16 @@ export class AppApi extends HttpClient implements IAppApi {
         return config;
     }
 
-    getSecretMessage = async (): Promise<string> => {
-        const response = await this.instance.get("secretMessage");
-        return response.data as string;
-    };
+    getSecretMessage = async (): Promise<string> =>
+        this.get<string>("secretMessage");
 
-    postEditorContent = async (content: string): Promise<IEditorData> => {
-        const data = {
+    postEditorContent = async (content: string): Promise<IEditorData> =>
+        this.post("editor", JSON.stringify({
             Content: content
-        };
-        return this.instance.post("editor", JSON.stringify(data));
-    }
+        }));
 
-    loadForecasts = async (): Promise<IWeatherForecast[]> => {
-        return this.instance.get("weatherforecast");
-    }
-
+    loadForecasts = async (): Promise<IWeatherForecast[]> =>
+        this.get<IWeatherForecast[]>("weatherforecast");
 }
 
 export default () => new AppApi();
-
-
-//export function initAxios() {
-
-//    axios.interceptors.request.use(async (config) => {
-//        console.log("axios.interceptors.request.use");
-//        const accessToken = await authService.getAccessToken();
-//        if (accessToken !== "" || accessToken !== undefined) {
-//            config.headers.common.Authorization = `Bearer ${accessToken}`;
-//        }
-//        return config;
-//    });
-//}
-
-//const serviceUrl = "https://localhost:5003";
-
-//const http = axios.create({
-//    baseURL: `${serviceUrl}/api`,
-//    headers: { "Content-Type": "application/json" }
-//});
-
-//export function getSecretMessage() {
-//    return axios("http://localhost:7000/api/secretMessage",
-//        {
-//            method: "get"
-//        });
-//}
-
-//export async function postEditorContent(content: string): Promise<IEditorData> {
-
-//    const data = {
-//        Content: content
-//    };
-
-//    const response = await http.post("editor", JSON.stringify(data));
-//    return response.data;
-
-//}

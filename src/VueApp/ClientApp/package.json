@@ -33,10 +33,16 @@
     "@types/vue-router": "^2.0.0",
     "@types/vue2-editor": "^2.6.0",
     "@types/webpack-env": "^1.15.2",
+    "@typescript-eslint/eslint-plugin": "^4.1.0",
+    "@typescript-eslint/parser": "^4.1.0",
     "@vue/cli-plugin-babel": "^4.5.4",
     "@vue/cli-plugin-typescript": "^4.5.4",
     "@vue/cli-service": "^4.5.4",
     "copy-webpack-plugin": "^6.0.3",
+    "eslint": "^7.8.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.1",
     "typescript": "^3.9.7",
     "vue-template-compiler": "^2.6.12"
   }

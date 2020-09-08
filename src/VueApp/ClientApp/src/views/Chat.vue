@@ -18,12 +18,20 @@
 
 <script lang="ts">
 
-    import { HubConnection, HubConnectionBuilder, LogLevel } from "@aspnet/signalr"
+    import { HubConnection, HubConnectionBuilder, LogLevel } from "@aspnet/signalr";
     import { Component, Vue } from "vue-property-decorator";
-    import { connect } from "tls";
 
     @Component
     export default class Counter extends Vue {
+
+        public message: string = "Your message";
+
+        private messages: string[] = [];
+
+        private connection: HubConnection = new HubConnectionBuilder()
+            .withUrl("/chathub")
+            .configureLogging(LogLevel.Information)
+            .build();
 
         constructor() {
             super();
@@ -31,14 +39,6 @@
                 this.connection.on("RecieveMessage", this.onMessageRecieved);
             });
         }
-
-        private connection: HubConnection = new HubConnectionBuilder()
-            .withUrl("/chathub")
-            .configureLogging(LogLevel.Information)
-            .build();
-
-        private messages: string[] = [];
-        public message: string = "Your message";
 
         private onMessageRecieved(user: string, message: string) {
             console.log("Recieved: ", message);

@@ -77,7 +77,8 @@
     import DxColorBox from "devextreme-vue/color-box";
     import { DxSwitch } from "devextreme-vue/switch";
 
-    import AppApi from "../services/api";
+    import AppApi from "@/services/api";
+    import authStore from "@/store/modules/auth";
 
     @Component({
         filters: {
@@ -116,13 +117,16 @@
 
         private appApi = AppApi();
 
-        private loggedIn: boolean = false;
+        //private loggedIn: boolean = false;
+        get loggedIn() {
+            return authStore.isLoggedIn;
+        }
 
         public async mounted() {
             this.loadForecasts();
-            authService.isLoggedIn().then((res) => {
-                this.loggedIn = res;
-            });
+            //authService.isLoggedIn().then((res) => {
+            //    this.loggedIn = res;
+            //});
         }
 
         public async loadForecasts() {

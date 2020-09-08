@@ -1,36 +1,41 @@
 ﻿import { VuexModule, Module, getModule, Action, Mutation, MutationAction } from "vuex-module-decorators";
-import store from "../index";
+import store from "@/store";
+import authService from "@/services/auth";
 
 @Module({
     namespaced: true,
     name: "auth",
     store: store,
     dynamic: true,
-    preserveState: true
+    preserveState: false
 })
 class AuthModule extends VuexModule {
 
-    private isLoggedIn: boolean = false;
+    _isLoggedIn: boolean = false;
 
-    @Action({ commit: "setLoggedIn" })
-    public userLoggedIn() {
-        return this.isLoggedIn;
+    @Action({rawError: true})
+    public login() {
+        this.context.commit("setLoggedIn", true);
     }
 
-    @Action({ commit: "setLoggedOut" })
-    public userLoggedOut() {
-        return this.isLoggedIn;
-    }
-
-    @Mutation
-    private setLoggedIn() {
-        this.isLoggedIn = true;
+    @Action({ rawError: true })
+    public logout() {
+        this.context.commit("setLoggedIn", false);
     }
 
     @Mutation
-    private setLoggedOut() {
-        this.isLoggedIn = false;
+    public setLoggedIn(loggedIn: boolean) {
+        console.log(this);
+        this._isLoggedIn = loggedIn;
     }
+
+    public get isLoggedIn(): boolean | null { return this._isLoggedIn; }
+
+    //@Mutation
+    //private setLoggedOut() {
+    //    this.isLoggedIn = false;
+    //}
+    // https://github.com/championswimmer/vuex-module-decorators/issues/171
 
 }
 export default getModule(AuthModule);
