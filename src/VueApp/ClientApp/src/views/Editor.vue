@@ -10,7 +10,7 @@
     import Vue from "vue";
     import { VueEditor } from "vue2-editor";
 
-    import { postEditorContent } from "../services/api";
+    import AppApi from "../services/api";
     import Component from "vue-class-component";
 
     import { IEditorData } from "../models";
@@ -24,10 +24,17 @@
 
         private content: string = "<h1>Some initial content</h1>";
 
+        private appApi = AppApi();
+
         public save() {
-            postEditorContent(this.content).then((data: IEditorData) => {
+
+            this.appApi.postEditorContent(this.content).then((data: IEditorData) => {
                 console.log(data);
-            }).catch((err) => console.log(err));
+            }).catch((err) => console.log(err)); 
+
+            //postEditorContent(this.content).then((data: IEditorData) => {
+            //    console.log(data);
+            //}).catch((err) => console.log(err));
         }
 
     }

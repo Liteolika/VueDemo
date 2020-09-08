@@ -68,8 +68,7 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
-    import { IWeatherForecast } from "../models/IWeatherForecast";
-    import axios from "axios";
+    import { IWeatherForecast } from "@/models";
     import moment from "moment";
 
     import authService from "../services/auth";
@@ -77,6 +76,8 @@
     import DxButton from "devextreme-vue/button";
     import DxColorBox from "devextreme-vue/color-box";
     import { DxSwitch } from "devextreme-vue/switch";
+
+    import AppApi from "../services/api";
 
     @Component({
         filters: {
@@ -113,6 +114,8 @@
             },
         ];
 
+        private appApi = AppApi();
+
         private loggedIn: boolean = false;
 
         public async mounted() {
@@ -123,11 +126,11 @@
         }
 
         public async loadForecasts() {
-            try {
-                this.forecasts = (await axios.get("weatherforecast")).data;
-            } catch {
+            this.appApi.loadForecasts().then((forecasts: IWeatherForecast[]) => {
+                this.forecasts = forecasts;
+            }).catch((error) => {
                 this.forecasts = [{ summary: "No data." } as IWeatherForecast];
-            }
+            });
         }
 
         public async login() {
