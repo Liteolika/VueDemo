@@ -1,9 +1,8 @@
-﻿/* eslint-disable @typescript-eslint/camelcase */
-import Oidc, { UserManager, WebStorageStateStore, User, UserManagerSettings, Log } from "oidc-client";
+﻿import Oidc, { UserManager, WebStorageStateStore, User, UserManagerSettings, Log } from "oidc-client";
 import * as authStore from "@/store/modules/auth";
 
-Oidc.Log.logger = console;
-Oidc.Log.level = Oidc.Log.INFO;
+Log.logger = console;
+Log.level = Log.INFO;
 
 export interface AuthService {
     userManager: UserManager;
@@ -19,16 +18,14 @@ class AuthServiceImpl implements AuthService {
     public userManager: UserManager = new UserManager(this.getUserManagerSettings());
 
     constructor() {
-        //console.log("AuthServiceImpl:Constructor");
 
-        this.userManager.getUser().then((user: User|null) => {
+        this.userManager.getUser().then((user: User | null) => {
             if (user !== null)
                 authStore.actions.login();
         });
 
         this.userManager.events.addUserSignedOut(() => {
-            //console.log("addUserSignedOut");
-            this.userManager.getUser().then((user: User | null) => {
+        this.userManager.getUser().then((user: User | null) => {
                 if (user !== null)
                     authStore.actions.login();
                 else
@@ -37,7 +34,6 @@ class AuthServiceImpl implements AuthService {
         });
 
         this.userManager.events.addUserLoaded(() => {
-            //console.log("addUserLoaded");
             authStore.actions.login();
         });
 

@@ -2,8 +2,11 @@
     <div class="home">
         <h1>Counter</h1>
         <p>Current count: {{currentCount}}</p>
-        <button class="btn btn-sm btn-primary" @click="decrement">Decrement</button>
-        <button class="btn btn-sm btn-secondary" @click="increment">Increment</button>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-primary" @click="decrement">Decrement</button>
+            <button class="btn btn-sm btn-secondary" @click="increment">Increment</button>
+            <button class="btn btn-sm btn-secondary" @click="incrementLoop">Run a loop</button>
+        </div>
     </div>
 </template>
 
@@ -26,6 +29,9 @@
             await counterStore.actions.decrement();
         }
 
+        private async incrementLoop() {
+            await counterStore.actions.incrementLoop({ loopCount: 10 });
+        }
     }
 
 </script>

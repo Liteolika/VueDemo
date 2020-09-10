@@ -47,7 +47,7 @@ async function incrementLoop(context: ActionContext, payload: { loopCount: numbe
             if (--i) {
                 theLoop(i);
             }
-        }, 3000);
+        }, 500);
     };
 
     theLoop(payload.loopCount);
