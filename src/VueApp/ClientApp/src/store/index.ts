@@ -1,32 +1,19 @@
 ﻿import Vue from "vue";
 import Vuex, { StoreOptions } from "vuex";
+import { storeBuilder, RootState, persistedStates } from "./RootState"
 import VuexPersistence, { PersistOptions } from "vuex-persist";
-import createPersistedState from "vuex-persistedstate";
-
-import { CountModule } from "@/store/modules/count";
-import { AuthModule } from "@/store/modules/auth";
 
 Vue.use(Vuex);
 
-interface StoreType {
-    count: CountModule,
-    auth: AuthModule,
-}
+const persistOptions: PersistOptions<RootState> =
+{
+    modules: persistedStates
+};
 
-let vuexLocal = new VuexPersistence<StoreType>({
-    storage: localStorage,
-    key: "siallo"
-});
+const vuexPersist = new VuexPersistence<RootState>(persistOptions);
 
-const dataState = createPersistedState({
-    paths: ['data']
-});
+const storeOptions: StoreOptions<RootState> = {
+    plugins: [ vuexPersist.plugin ]
+};
 
-let store = new Vuex.Store<StoreType>({
-    plugins: [createPersistedState()]
-});
-
-
-
-export default store;
-
+export default storeBuilder.vuexStore(storeOptions);

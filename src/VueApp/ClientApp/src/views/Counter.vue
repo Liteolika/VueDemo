@@ -1,35 +1,29 @@
 ﻿<template>
     <div class="home">
         <h1>Counter</h1>
-
-        <p>Current count: {{ count}}</p>
-
+        <p>Current count: {{currentCount}}</p>
         <button class="btn btn-sm btn-primary" @click="decrement">Decrement</button>
         <button class="btn btn-sm btn-secondary" @click="increment">Increment</button>
     </div>
 </template>
 
 <script lang="ts">
-    //import store, { COUNTER_INCREMENT, COUNTER_DECREMENT } from "../store";
-    import CountModule from "@/store/modules/count";
     import { Component, Vue } from "vue-property-decorator";
+    import * as counterStore from "@/store/modules/counter";
 
     @Component
     export default class Counter extends Vue {
 
-        get count() {
-            return CountModule.getCounter;
-            //return store.state.counter.count;
+        get currentCount() {
+            return counterStore.getters.getCurrentCount;
         }
 
-        private increment() {
-            CountModule.increment();
-            //store.dispatch(COUNTER_INCREMENT);
+        private async increment() {
+            await counterStore.actions.increment();
         }
 
-        private decrement() {
-            CountModule.decrement();
-            //store.dispatch(COUNTER_DECREMENT);
+        private async decrement() {
+            await counterStore.actions.decrement();
         }
 
     }

@@ -10,6 +10,7 @@ import OidcSignoutCallback from "./views/OidcSignoutCallback.vue";
 
 import Editor from "./views/Editor.vue";
 import Chat from "./views/Chat.vue";
+import Counter from "@/views/Counter.vue";
 
 import authService from "./services/auth";
 
@@ -29,10 +30,7 @@ const routes = [
     {
         path: "/counter",
         name: "counter",
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "Counter" */ "./views/Counter.vue"),
+        component: Counter,
     },
     {
         path: "/secret",

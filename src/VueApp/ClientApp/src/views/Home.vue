@@ -61,7 +61,10 @@
             <DxButton text="Click me" @click="sayHelloWorld" />
             <DxColorBox value="#f05b41" />
         </div>
-
+        <div>
+            <CounterComponent></CounterComponent>
+        </div>
+        
     </div>
 
 </template>
@@ -78,7 +81,9 @@
     import { DxSwitch } from "devextreme-vue/switch";
 
     import AppApi from "@/services/api";
-    import authStore from "@/store/modules/auth";
+    import * as authStore from "@/store/modules/auth";
+
+    import CounterComponent from "@/views/Counter.vue";
 
     @Component({
         filters: {
@@ -93,7 +98,8 @@
             thebutton,
             DxButton,
             DxColorBox,
-            DxSwitch
+            DxSwitch,
+            CounterComponent
         },
         methods: {
             sayHelloWorld() {
@@ -117,16 +123,12 @@
 
         private appApi = AppApi();
 
-        //private loggedIn: boolean = false;
         get loggedIn() {
-            return authStore.isLoggedIn;
+            return authStore.getters.isLoggedIn;
         }
 
         public async mounted() {
             this.loadForecasts();
-            //authService.isLoggedIn().then((res) => {
-            //    this.loggedIn = res;
-            //});
         }
 
         public async loadForecasts() {
@@ -146,7 +148,5 @@
         }
 
     }
-
-
 
 </script>
