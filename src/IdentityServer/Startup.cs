@@ -120,7 +120,7 @@ namespace IdentityServer
         private void InitializeDatabase(IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
-            
+
             var persistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
             var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
             var applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -130,7 +130,7 @@ namespace IdentityServer
 
             if (!configurationDbContext.Database.IsInMemory())
                 configurationDbContext.Database.Migrate();
-            
+
             if (!applicationDbContext.Database.IsInMemory())
                 applicationDbContext.Database.Migrate();
 
@@ -193,7 +193,9 @@ namespace IdentityServer
                     Email = "test@liteolika.se"
                 };
 
-                IdentityResult result = AsyncHelpers.RunSync(() => userManager.CreateAsync(user, "TheSecret2020!"));
+                userManager.Options.Password.SetDeveloperPasswordRequirements();
+                IdentityResult result = AsyncHelpers.RunSync(() => userManager.CreateAsync(user, "test"));
+                userManager.Options.Password.SetDefaultRequirements();
 
                 if (result == IdentityResult.Success)
                 {
@@ -201,12 +203,38 @@ namespace IdentityServer
                     AsyncHelpers.RunSync(() => userManager.AddClaimAsync(user, defaultClaim));
 
                 }
+
                 
+
             }
 
-            
+
 
         }
     }
+
+    public static class PasswordOptionsExtensions
+    {
+        public static void SetDeveloperPasswordRequirements(this PasswordOptions options)
+        {
+            options.RequireDigit = false;
+            options.RequireLowercase = false;
+            options.RequireNonAlphanumeric = false;
+            options.RequireUppercase = false;
+            options.RequiredLength = 4;
+            options.RequiredUniqueChars = 0;
+        }
+
+        public static void SetDefaultRequirements(this PasswordOptions options)
+        {
+            options.RequireDigit = true;
+            options.RequireLowercase = true;
+            options.RequireNonAlphanumeric = true;
+            options.RequireUppercase = true;
+            options.RequiredLength = 6;
+            options.RequiredUniqueChars = 1;
+        }
+    }
+
 
 }
