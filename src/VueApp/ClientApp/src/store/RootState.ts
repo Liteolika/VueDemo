@@ -8,7 +8,8 @@ export interface RootState {
 }
 
 export const persistedStates: string[] = [
-    "counter"
+    "counter",
+    "auth"
 ];
 
 export const storeBuilder = getStoreBuilder<RootState>();

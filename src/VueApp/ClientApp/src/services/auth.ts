@@ -21,20 +21,24 @@ class AuthServiceImpl implements AuthService {
 
         this.userManager.getUser().then((user: User | null) => {
             if (user !== null)
-                authStore.actions.login();
+                authStore.actions.login(user);
         });
 
         this.userManager.events.addUserSignedOut(() => {
-        this.userManager.getUser().then((user: User | null) => {
+            this.userManager.getUser().then((user: User | null) => {
                 if (user !== null)
-                    authStore.actions.login();
+                    authStore.actions.login(user);
                 else
                     authStore.actions.logout();
             });
         });
 
         this.userManager.events.addUserLoaded(() => {
-            authStore.actions.login();
+            this.userManager.getUser().then((user: User | null) => {
+                if (user !== null)
+                    authStore.actions.login(user);
+            });
+            
         });
 
     }

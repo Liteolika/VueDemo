@@ -1,13 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
+using IdentityModel;
 using IdentityServer.Data;
 using IdentityServer4;
-using IdentityServer4.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,7 +18,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace IdentityServer
 {
@@ -55,13 +56,16 @@ namespace IdentityServer
                 }
             });
 
-            services.AddAuthentication().AddAzureAD(options => Configuration.Bind("AzureAD", options));
+            services.AddAuthentication()
+                .AddAzureAD(options => Configuration.Bind("AzureAD", options));
 
             services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
                 {
                     options.Authority = options.Authority + "/v2.0/";
                     options.TokenValidationParameters.ValidateIssuer = true;
-                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    
+                    //options.ClaimActions.Add(new JsonKeyClaimAction(JwtClaimTypes.Role, null, JwtClaimTypes.Role));
                 });
 
             services
@@ -77,6 +81,19 @@ namespace IdentityServer
                 {
                     // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                     options.EmitStaticAudienceClaim = true;
+
+                    options.Events.RaiseErrorEvents = true;
+                    options.Events.RaiseInformationEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseSuccessEvents = true;
+                    options.UserInteraction.LoginUrl = "/Account/Login";
+                    options.UserInteraction.LogoutUrl = "/Account/Logout";
+                    options.Authentication = new IdentityServer4.Configuration.AuthenticationOptions()
+                    {
+                        CookieLifetime = TimeSpan.FromHours(10), // ID server cookie timeout set to 10 hours
+                        CookieSlidingExpiration = true
+                    };
+
                 })
                 .AddConfigurationStore(options =>
                 {
@@ -225,11 +242,7 @@ namespace IdentityServer
                 {
                     AsyncHelpers.RunSync(() => userManager.AddToRoleAsync(user, defaultRole.Name));
                     AsyncHelpers.RunSync(() => userManager.AddClaimAsync(user, defaultClaim));
-
                 }
-
-                
-
             }
 
 

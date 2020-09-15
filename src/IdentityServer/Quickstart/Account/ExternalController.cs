@@ -104,10 +104,12 @@ namespace IdentityServerHost.Quickstart.UI
             var (user, provider, providerUserId, claims) = await FindUserFromExternalProvider(result);
             if (user == null)
             {
+                // https://deblokt.com/2019/09/23/04-part-1-identityserver4-asp-net-core-identity/
+
                 // this might be where you might initiate a custom workflow for user registration
                 // in this sample we don't show how that would be done, as our sample implementation
                 // simply auto-provisions new external user
-                user = await AutoProvisionUser(provider, providerUserId, claims);
+                user = await AutoProvisionUserAsync(provider, providerUserId, claims);
             }
 
             // this allows us to collect any additional claims or properties
@@ -174,17 +176,38 @@ namespace IdentityServerHost.Quickstart.UI
             return (user, provider, providerUserId, claims);
         }
 
-        private async Task<IdentityUser> AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
+        private async Task<IdentityUser> AutoProvisionUserAsync(string provider, string providerUserId, IEnumerable<Claim> claims)
         {
-            // create dummy internal account (you can do something more complex)
-            var user = new IdentityUser(Guid.NewGuid().ToString());
+            var filtered = FilterClaims(claims);
 
-            await _userManager.CreateAsync(user);
+            var user =  new IdentityUser
+            {
+                UserName = filtered.FirstOrDefault(x=>x.Type == JwtClaimTypes.PreferredUserName)?.Value ?? Guid.NewGuid().ToString(),
+            };
 
-            // add external user ID to new account
-            await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+            var identityResult = await _userManager.CreateAsync(user);
+            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+
+            if (filtered.Any())
+            {
+                identityResult = await _userManager.AddClaimsAsync(user, filtered);
+                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            }
+
+            identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
 
             return user;
+
+            //// create dummy internal account (you can do something more complex)
+            //var user = new IdentityUser(Guid.NewGuid().ToString());
+
+            //await _userManager.CreateAsync(user);
+
+            //// add external user ID to new account
+            //await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
+
+            //return user;
         }
 
         // if the external login is OIDC-based, there are certain things we need to preserve to make logout work
@@ -206,5 +229,56 @@ namespace IdentityServerHost.Quickstart.UI
                 localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = idToken } });
             }
         }
+
+        private List<Claim> FilterClaims(IEnumerable<Claim> claims)
+        {
+            // create a list of claims that we want to transfer into our store
+            var filtered = new List<Claim>();
+
+            // user's display name
+            var name = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Name)?.Value ??
+                       claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+            if (name != null)
+            {
+                filtered.Add(new Claim(JwtClaimTypes.Name, name));
+            }
+            else
+            {
+                var first = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.GivenName)?.Value ??
+                            claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
+                var last = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
+                           claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
+                if (first != null && last != null)
+                {
+                    filtered.Add(new Claim(JwtClaimTypes.Name, first + " " + last));
+                }
+                else if (first != null)
+                {
+                    filtered.Add(new Claim(JwtClaimTypes.Name, first));
+                }
+                else if (last != null)
+                {
+                    filtered.Add(new Claim(JwtClaimTypes.Name, last));
+                }
+            }
+
+            // username
+            var username = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.PreferredUserName)?.Value ??
+                           claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+
+            if (username != null)
+                filtered.Add(new Claim(JwtClaimTypes.PreferredUserName, username));
+
+            // email
+            var email = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value ??
+                        claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            if (email != null)
+            {
+                filtered.Add(new Claim(JwtClaimTypes.Email, email));
+            }
+
+            return filtered;
+        }
+
     }
 }
