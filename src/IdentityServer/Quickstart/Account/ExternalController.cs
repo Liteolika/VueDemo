@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -87,6 +88,7 @@ namespace IdentityServerHost.Quickstart.UI
         {
             // read external identity from the temporary cookie
             var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
             if (result?.Succeeded != true)
             {
                 throw new Exception("External authentication error");
@@ -176,6 +178,7 @@ namespace IdentityServerHost.Quickstart.UI
         {
             // create dummy internal account (you can do something more complex)
             var user = new IdentityUser(Guid.NewGuid().ToString());
+
             await _userManager.CreateAsync(user);
 
             // add external user ID to new account

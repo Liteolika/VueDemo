@@ -2,29 +2,39 @@
 using System.Reflection;
 using System.Security.Claims;
 using IdentityServer.Data;
+using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace IdentityServer
 {
     public class Startup
     {
         public IWebHostEnvironment Environment { get; }
+        public IConfiguration Configuration { get; }
 
-        public Startup(IWebHostEnvironment environment)
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
             Environment = environment;
+            Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // https://github.com/Deblokt/IdentityServer4Demos/blob/master/06.%20IdentityServer4%20External%20providers/src/IdentityServer/Startup.cs
+
             services.AddControllersWithViews();
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
@@ -45,8 +55,22 @@ namespace IdentityServer
                 }
             });
 
+            services.AddAuthentication().AddAzureAD(options => Configuration.Bind("AzureAD", options));
+
+            services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+                {
+                    options.Authority = options.Authority + "/v2.0/";
+                    options.TokenValidationParameters.ValidateIssuer = true;
+                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                });
+
             services
-                .AddIdentity<IdentityUser, IdentityRole>()
+                .AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    //options.SignIn.RequireConfirmedAccount = true;
+                    //options.SignIn.RequireConfirmedEmail = true;
+                    //options.SignIn.RequireConfirmedPhoneNumber = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             var identityServerBuilder = services.AddIdentityServer(options =>
