@@ -1,6 +1,7 @@
 ﻿using IdentityServer4.Models;
 using System.Collections.Generic;
 using IdentityServer4;
+using IdentityServer.Quickstart;
 
 namespace IdentityServer
 {
@@ -16,7 +17,9 @@ namespace IdentityServer
             new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                //new IdentityResources.Profile()
+                new ProfileWithRoleIdentityResource()
+                //https://medium.com/@marcodesanctis2/role-based-security-with-blazor-and-identity-server-4-aba12da70049
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
