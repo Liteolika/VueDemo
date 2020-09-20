@@ -25,6 +25,7 @@ class AuthServiceImpl implements AuthService {
         });
 
         this.userManager.events.addUserSignedOut(() => {
+            this.userManager.clearStaleState();
             this.userManager.getUser().then((user: User | null) => {
                 if (user !== null)
                     authStore.actions.login(user);
@@ -40,7 +41,6 @@ class AuthServiceImpl implements AuthService {
             });
             
         });
-
     }
 
     public getUser(): Promise<User | null> {
@@ -66,13 +66,21 @@ class AuthServiceImpl implements AuthService {
         return (user !== null && !user.expired);
     }
 
+    public hasRole(role: string): boolean {
+        const profile: Oidc.Profile | null = authStore.getters.getProfile;
+        if (profile === null || profile === undefined) return false;
+        console.log(profile.role);
+        const roles: string[] = profile.role;
+        return roles.indexOf(role) > -1;
+    }
+
     private getUserManagerSettings(): UserManagerSettings {
         return {
             authority: "https://localhost:5001",
             client_id: "js",
             redirect_uri: "https://localhost:5003/oidc-callback",
             response_type: "id_token token",
-            scope: "openid profile api1",
+            scope: "openid profile api1 roles",
             post_logout_redirect_uri: "https://localhost:5003/oidc-signout-callback",
             userStore: new WebStorageStateStore({ store: window.localStorage }),
             automaticSilentRenew: true,

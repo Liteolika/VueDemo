@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices;
@@ -34,9 +35,9 @@ namespace VueApp
                 .AddJwtBearer("Bearer", options =>
                 {
                     options.Authority = "https://localhost:5001";
-                    
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        RoleClaimType = ClaimTypes.Role,
                         ValidateAudience = false,
                     };
                 });

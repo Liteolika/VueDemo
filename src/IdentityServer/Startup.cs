@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
@@ -64,13 +65,14 @@ namespace IdentityServer
                     options.Authority = options.Authority + "/v2.0/";
                     options.TokenValidationParameters.ValidateIssuer = true;
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    
+
                     //options.ClaimActions.Add(new JsonKeyClaimAction(JwtClaimTypes.Role, null, JwtClaimTypes.Role));
                 });
 
             services
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
+                    options.ClaimsIdentity.RoleClaimType = ClaimTypes.Role;
                     //options.SignIn.RequireConfirmedAccount = true;
                     //options.SignIn.RequireConfirmedEmail = true;
                     //options.SignIn.RequireConfirmedPhoneNumber = true;
@@ -218,12 +220,24 @@ namespace IdentityServer
             var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var defaultRole = new IdentityRole("users");
-            var defaultClaim = new Claim("api1", "true");
+            var defaultRoles = new List<IdentityRole>
+            {
+                new IdentityRole("users"),
+                new IdentityRole("weatherforcaster")
+            };
+
+            var defaultClaims = new List<Claim>
+            {
+                new Claim("api1", "true"),
+                new Claim("api1.read", "true")
+            };
 
             if (!roleManager.Roles.Any())
             {
-                AsyncHelpers.RunSync(() => roleManager.CreateAsync(defaultRole));
+                defaultRoles.ForEach(x =>
+                {
+                    AsyncHelpers.RunSync(() => roleManager.CreateAsync(x));
+                });
             }
 
             if (!userManager.Users.Any())
@@ -240,8 +254,16 @@ namespace IdentityServer
 
                 if (result == IdentityResult.Success)
                 {
-                    AsyncHelpers.RunSync(() => userManager.AddToRoleAsync(user, defaultRole.Name));
-                    AsyncHelpers.RunSync(() => userManager.AddClaimAsync(user, defaultClaim));
+                    defaultRoles.ForEach(identityRole =>
+                    {
+                        AsyncHelpers.RunSync(() => userManager.AddToRoleAsync(user, identityRole.Name));
+                    });
+
+                    defaultClaims.ForEach(claim =>
+                    {
+                        AsyncHelpers.RunSync(() => userManager.AddClaimAsync(user, claim));
+                    });
+                    
                 }
             }
 

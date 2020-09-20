@@ -128,7 +128,9 @@
         }
 
         public async mounted() {
-            this.loadForecasts();
+            if (authService.hasRole("weatherforcaster")) {
+                this.loadForecasts();
+            }
         }
 
         public async loadForecasts() {

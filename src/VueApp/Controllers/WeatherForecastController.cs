@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace VueApp.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -24,8 +25,13 @@ namespace VueApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "weatherforcaster")]
         public IEnumerable<WeatherForecast> Get()
         {
+            var user = HttpContext.User;
+            var hasUserRole = user.IsInRole("weatherforcaster");
+            var hasUserRole2 = user.IsInRole("greger");
+
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
